@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -13,15 +14,29 @@
     <fieldset>
       <legend>Вес заказа</legend>
       <label>Стандартная плитка (кг):</label>
-      <input type="number" name="weight_standard" min="0" step="1"><br/>
+      <input type="number" name="weight_standard" min="0" step="1" /><br />
       <label>Крупная плитка (кг):</label>
-      <input type="number" id="weight_large" name="weight_large" min="0" step="1"><br/>
+      <input type="number" id="weight_large" name="weight_large" min="0" step="1" /><br />
       <div id="large_formats_block" style="display: none;">
         <label>Формат крупной плитки:</label>
         <select name="large_format">
           <option value="">Выберите формат</option>
-          <option>100x200</option><option>120x240</option><option>160x320</option>
-        </select><br/>
+          <option>100x200</option>
+          <option>100x260</option>
+          <option>100x280</option>
+          <option>100x290</option>
+          <option>100x295</option>
+          <option>100x299</option>
+          <option>100x300</option>
+          <option>120x240</option>
+          <option>120x278</option>
+          <option>120x280</option>
+          <option>120x300</option>
+          <option>159x324</option>
+          <option>160x320</option>
+          <option>162x324</option>
+          <option>80x324</option>
+        </select><br />
       </div>
     </fieldset>
     <label>Тип загрузки:</label>
@@ -31,32 +46,20 @@
       <option value="manipulator">Манипулятор</option>
       <option value="lift">Гидролифт</option>
       <option value="any">Любая</option>
-    </select><br/>
-    <div id="return_pallet_block" style="display:none;">
-      <input type="checkbox" id="return_pallets"> Возврат тары
+    </select><br />
+    <input type="checkbox" id="return_pallets" /> Возврат тары<br />
+    <input type="checkbox" id="underground" /> Подземный паркинг<br />
+    <div id="height_limit_block" style="display: none;">
+      Ограничение по высоте (м): <input type="number" name="height_limit" step="0.05" />
     </div>
-    <input type="checkbox" id="underground"> Подземный паркинг<br/>
-    <div id="height_limit_block" style="display:none;">
-      Ограничение по высоте (м): <input type="number" name="height_limit" step="0.05">
-    </div>
-    <input type="checkbox" id="precise_time"> Доставка к точному времени<br/>
-    <div id="time_block" style="display:none;">
-      Время: <input type="time" name="delivery_time">
-    </div>
+    <input type="checkbox" id="precise_time" /> Доставка к точному времени<br />
     <label>Адрес или координаты (lat, lon):</label>
-    <input type="text" name="address" placeholder="или кликните по карте"><br/>
-    <input type="checkbox" id="need_movers"> Нужны грузчики?<br/>
-    <div id="movers_block" style="display:none;">
-      <input type="radio" name="only_unload" value="true" checked> Только выгрузка<br/>
-      <input type="radio" name="only_unload" value="false"> Выгрузка и подъём<br/>
-      Этаж: <input type="number" name="floor"><br/>
-      <label><input type="radio" name="lift" value="true"> Есть лифт</label>
-      <label><input type="radio" name="lift" value="false" checked> Нет лифта</label>
-    </div>
+    <input type="text" name="address" placeholder="или кликните по карте" /><br />
+    <input type="checkbox" id="need_movers" /> Нужны грузчики?<br />
     <button type="submit">Рассчитать стоимость</button>
   </form>
   <div id="result"></div>
-  <div id="map" style="height: 400px; margin-top:20px;"></div>
+  <div id="map" style="height: 400px; margin-top: 20px;"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="main.js"></script>
 </body>
