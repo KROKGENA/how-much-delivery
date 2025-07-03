@@ -4,76 +4,51 @@
   <meta charset="UTF-8">
   <title>Калькулятор доставки плитки</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="static/style.css">
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
   <h1>Калькулятор доставки</h1>
   <form id="calcForm">
-    
-    <!-- Разделение веса по типу плитки -->
     <fieldset>
       <legend>Вес заказа</legend>
-
-      <!-- Вес стандартной плитки -->
       <label>Стандартная плитка (кг):</label>
       <input type="number" name="weight_standard" min="0" step="1"><br/>
-
-      <!-- Вес крупной плитки -->
       <label>Крупная плитка (кг):</label>
       <input type="number" id="weight_large" name="weight_large" min="0" step="1"><br/>
-
-      <!-- Формат крупной плитки (отображается, если введён вес крупной плитки) -->
       <div id="large_formats_block" style="display: none;">
         <label>Формат крупной плитки:</label>
         <select name="large_format">
           <option value="">Выберите формат</option>
-          <option>100x200</option>
-          <option>100x260</option>
-          <option>100x280</option>
-          <option>100x290</option>
-          <option>100x295</option>
-          <option>100x299</option>
-          <option>100x300</option>
-          <option>120x240</option>
-          <option>120x278</option>
-          <option>120x280</option>
-          <option>120x300</option>
-          <option>159x324</option>
-          <option>160x320</option>
-          <option>162x324</option>
-          <option>80x324</option>
+          <option>100x200</option><option>100x260</option><option>100x280</option>
+          <option>100x290</option><option>100x295</option><option>100x299</option>
+          <option>100x300</option><option>120x240</option><option>120x278</option>
+          <option>120x280</option><option>120x300</option><option>159x324</option>
+          <option>160x320</option><option>162x324</option><option>80x324</option>
         </select><br/>
       </div>
     </fieldset>
-
-    <!-- Остальная часть формы -->
-   <label>Тип загрузки:</label>
-<select name="load_type">
-  <option value="top">Верхняя</option>
-  <option value="side">Боковая</option>
-  <option value="manipulator">Манипулятор</option>
-  <option value="lift">Гидролифт</option>
-  <option value="any">Любая</option>
-</select><br/>
-
+    <label>Тип загрузки:</label>
+    <select name="load_type">
+      <option value="top">Верхняя</option>
+      <option value="side">Боковая</option>
+      <option value="manipulator">Манипулятор</option>
+      <option value="lift">Гидролифт</option>
+      <option value="any">Любая</option>
+    </select><br/>
     <div id="return_pallet_block" style="display:none;">
       <input type="checkbox" id="return_pallets"> Возврат тары
     </div>
-
     <input type="checkbox" id="underground"> Подземный паркинг<br/>
     <div id="height_limit_block" style="display:none;">
       Ограничение по высоте (м): <input type="number" name="height_limit" step="0.05">
     </div>
-
     <input type="checkbox" id="precise_time"> Доставка к точному времени<br/>
     <div id="time_block" style="display:none;">
       Время: <input type="time" name="delivery_time">
     </div>
-
     <label>Адрес или координаты (lat, lon):</label>
     <input type="text" name="address" placeholder="или кликните по карте"><br/>
-
     <input type="checkbox" id="need_movers"> Нужны грузчики?<br/>
     <div id="movers_block" style="display:none;">
       <input type="radio" name="only_unload" value="true" checked> Только выгрузка<br/>
@@ -82,55 +57,11 @@
       <label><input type="radio" name="lift" value="true"> Есть лифт</label>
       <label><input type="radio" name="lift" value="false" checked> Нет лифта</label>
     </div>
-
     <button type="submit">Рассчитать стоимость</button>
   </form>
-
   <div id="result"></div>
   <div id="map" style="height: 400px; margin-top:20px;"></div>
-
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    // Инициализация карты
-    const map = L.map('map').setView([54.907129, 38.054109], 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
-    }).addTo(map);
-
-    // Отметка склада и радиус зоны 40 км
-    const warehouse = [54.907129, 38.054109];
-    L.marker(warehouse).addTo(map).bindPopup("Склад").openPopup();
-    L.circle(warehouse, { radius: 40000, color: 'green', fillOpacity: 0.1 }).addTo(map);
-
-    // Установка координат по клику на карту
-    map.on('click', function(e) {
-      const lat = e.latlng.lat.toFixed(6);
-      const lon = e.latlng.lng.toFixed(6);
-      document.querySelector("input[name='address']").value = lat + "," + lon;
-    });
-
-    // Показ/скрытие блока возврата тары в зависимости от типа плитки
-    document.getElementById('weight_large').addEventListener('input', function () {
-      const value = parseFloat(this.value);
-      const formatBlock = document.getElementById('large_formats_block');
-      const returnBlock = document.getElementById('return_pallet_block');
-      formatBlock.style.display = value > 0 ? 'block' : 'none';
-      returnBlock.style.display = value > 0 ? 'block' : 'none';
-    });
-
-    document.getElementById('underground').addEventListener('change', function() {
-      document.getElementById('height_limit_block').style.display = this.checked ? 'block' : 'none';
-    });
-
-    document.getElementById('precise_time').addEventListener('change', function() {
-      document.getElementById('time_block').style.display = this.checked ? 'block' : 'none';
-    });
-
-    document.getElementById('need_movers').addEventListener('change', function() {
-      document.getElementById('movers_block').style.display = this.checked ? 'block' : 'none';
-    });
-  </script>
-
   <script src="main.js"></script>
 </body>
 </html>
